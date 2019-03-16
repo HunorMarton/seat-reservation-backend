@@ -1,16 +1,13 @@
-import { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
+import socketIO from 'socket.io';
 import Seat from './model/Seat';
 import initialSeats from './initialSeats';
 
-var app = require('express')();
-
 const port = 3000;
-var server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-var io = require('socket.io').listen(server);
-
-io.origins('*:*');
+const app = express();
+const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+const io = socketIO.listen(server);
 
 mongoose.connect('mongodb://localhost/test', { useNewUrlParser: true });
 
@@ -19,12 +16,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
   // we're connected!
   console.log('yeyy connected');
-
-  // parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
-
-  // parse application/json
-  app.use(bodyParser.json());
 
   app.get('/', (req: Request, res: Response) => {
     Seat.find(function(err, seats) {
@@ -47,7 +38,7 @@ db.once('open', function() {
     });
   });
 
-  io.on('connection', function(socket: any) {
+  io.on('connection', function(socket) {
     console.log('a user connected');
 
     Seat.find(function(err, seats) {

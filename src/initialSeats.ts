@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import Seat, { Seat as SeatType } from './model/Seat';
 
 export default async () => {
