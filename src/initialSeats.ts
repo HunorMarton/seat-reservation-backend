@@ -10,7 +10,8 @@ export default async () => {
           row: i,
           column: column,
           fee: Math.round(Math.random() * 300),
-          reserved: false
+          reserved: false,
+          booked: false
         })
     );
     seats = [...seats, ...seatForRow];

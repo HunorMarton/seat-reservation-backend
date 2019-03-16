@@ -4,7 +4,8 @@ const seatSchema = new mongoose.Schema({
   row: Number,
   column: String,
   fee: Number,
-  reserved: Boolean
+  reserved: Boolean,
+  booked: Boolean
 });
 
 seatSchema.methods.reserve = function() {
