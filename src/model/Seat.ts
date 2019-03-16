@@ -1,6 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const seatSchema = new mongoose.Schema({
+export interface Seat extends mongoose.Document {
+  row: number;
+  column: string;
+  fee: number;
+  reserved: boolean;
+  booked: boolean;
+  reserve: () => void;
+}
+
+const seatSchema: Schema<Seat> = new mongoose.Schema({
   row: Number,
   column: String,
   fee: Number,
@@ -13,4 +22,4 @@ seatSchema.methods.reserve = function() {
   this.reserved = true;
 };
 
-export default mongoose.model('Seat', seatSchema);
+export default mongoose.model<Seat>('Seat', seatSchema);

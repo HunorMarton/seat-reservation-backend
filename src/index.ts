@@ -27,7 +27,7 @@ db.once('open', function() {
   app.use(bodyParser.json());
 
   app.get('/', (req: Request, res: Response) => {
-    Seat.find(function(err: any, seats: any) {
+    Seat.find(function(err, seats) {
       if (err) return console.error(err);
       console.log(seats);
       res.send(seats);
@@ -42,7 +42,7 @@ db.once('open', function() {
   });
 
   app.delete('/', function(req: Request, res: Response) {
-    Seat.deleteMany((err: any, seats: any) => {
+    Seat.deleteMany((err: any) => {
       res.send('All seats removed');
     });
   });
@@ -50,7 +50,7 @@ db.once('open', function() {
   io.on('connection', function(socket: any) {
     console.log('a user connected');
 
-    Seat.find(function(err: any, seats: any) {
+    Seat.find(function(err, seats) {
       if (err) return console.error(err);
       io.emit('initialList', seats);
     });
@@ -58,7 +58,7 @@ db.once('open', function() {
     socket.on('reserve', function({ row, column }: { row: number; column: string }) {
       socket.broadcast.emit('reserved', { row, column });
       console.log('reserving', row, column);
-      Seat.find({ row, column }, (err: any, seats: any) => {
+      Seat.find({ row, column }, (err, seats) => {
         if (seats.length === 0) console.error('No seat found');
         seats[0].reserved = true;
         seats[0].save();
@@ -68,7 +68,7 @@ db.once('open', function() {
     socket.on('cancel', function({ row, column }: { row: number; column: string }) {
       socket.broadcast.emit('cancelled', { row, column });
       console.log('cancelling', row, column);
-      Seat.find({ row, column }, (err: any, seats: any) => {
+      Seat.find({ row, column }, (err, seats) => {
         if (seats.length === 0) console.error('No seat found');
         seats[0].reserved = false;
         seats[0].save();
